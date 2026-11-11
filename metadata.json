@@ -1,0 +1,8 @@
+{
+  "name": "Remix E-VOTING OSIS V.1.0.6",
+  "description": "Sistem Pemilihan Ketua OSIS berbasis web dengan real-time Live Count, Bilik Suara digital aman anti double-voting, manajemen DPT \u0026 cetak kartu login PIN, kontrol sesi bilik suara, dan skema Supabase PostgreSQL.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,513 @@
+{
+  "school_config": {
+    "school_name": "SMKS PGRI 2 PALIMANAN",
+    "organization_type": "OSIS",
+    "logo_url": "/assets/images/school_emblem_logo_1793677969399.jpg",
+    "school_address": "Jl. Pendidikan Merdeka No. 45, Jakarta Pusat",
+    "principal_name": "Drs. H. Mulyadi, M.Pd."
+  },
+  "periods": [
+    {
+      "id": "period-2026-2027",
+      "year_label": "2026/2027",
+      "is_active": true,
+      "organization_type": "OSIS",
+      "school_name": "SMKS PGRI 2 PALIMANAN",
+      "voting_session_status": "OPEN",
+      "start_date": "2026-11-03T07:30:00Z",
+      "end_date": "2026-11-03T15:00:00Z",
+      "created_at": "2026-10-15T08:00:00Z"
+    },
+    {
+      "id": "period-2025-2026",
+      "year_label": "2025/2026",
+      "is_active": false,
+      "organization_type": "OSIS",
+      "school_name": "SMKS PGRI 2 PALIMANAN",
+      "voting_session_status": "CLOSED",
+      "start_date": "2025-11-05T07:30:00Z",
+      "end_date": "2025-11-05T15:00:00Z",
+      "created_at": "2025-10-10T08:00:00Z"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "cand-01",
+      "period_id": "period-2026-2027",
+      "candidate_number": 1,
+      "leader_name": "Muhammad Farhan Pratama",
+      "vice_leader_name": "",
+      "photo_url": "/assets/images/paslon_1_lead_1793677968157.jpg",
+      "vision": "Mewujudkan OSIS sebagai wadah aspirasi siswa yang inklusif, adaptif terhadap teknologi digital, dan berlandaskan budi pekerti luhur.",
+      "mission": [
+        "Memodernisasi kegiatan ekstrakurikuler berbasis talenta abad ke-21 dan kompetisi sains/olahraga.",
+        "Membuka kanal aspirasi digital \"Halo OSIS\" yang transparan, responsif, dan mudah diakses siswa.",
+        "Menggalakkan gerakan peduli lingkungan \"Green & Clean School\" dan pengurangan sampah plastik di kantin.",
+        "Mempererat kolaborasi lintas angkatan dan solidaritas antarkelas melalui festival seni tahunan."
+      ],
+      "work_programs": [
+        "Pekan Kreativitas dan Inovasi Siswa (InnoFest)",
+        "Digitalisasi mading sekolah dan podcast kesiswaan",
+        "Workshop kepemimpinan & public speaking untuk perwakilan kelas"
+      ],
+      "motto": "Berkarya dengan Aksi, Memimpin dengan Hati",
+      "created_at": "2026-10-20T09:00:00Z"
+    },
+    {
+      "id": "cand-02",
+      "period_id": "period-2026-2027",
+      "candidate_number": 2,
+      "leader_name": "Siti Nur Aisyah",
+      "vice_leader_name": "",
+      "photo_url": "/assets/images/paslon_2_lead_1793677970153.jpg",
+      "vision": "Membangun generasi pembelajar yang berakhlak mulia, berprestasi global, mandiri, dan peduli sesama.",
+      "mission": [
+        "Mengoptimalkan bimbingan tutor sebaya dalam persiapan olimpiade akademik dan ujian akhir.",
+        "Mengembangkan jiwa kewirausahaan siswa melalui unit koperasi kreatif OSIS (KreatifPreneur).",
+        "Menyelenggarakan kegiatan keagamaan dan bakti sosial berkala untuk memupuk empati sosial.",
+        "Memperkuat sinergi antara guru, komite sekolah, dan pengurus kelas demi kenyamanan belajar."
+      ],
+      "work_programs": [
+        "Program Tutor Sebaya Juara (Peer Learning Hub)",
+        "Bazar Karya Kewirausahaan Siswa tiap akhir semester",
+        "Aksi Tanggap Bencana & Peduli Panti Asuhan"
+      ],
+      "motto": "Santun Berakhlak, Hebat Berprestasi",
+      "created_at": "2026-10-20T09:15:00Z"
+    },
+    {
+      "id": "cand-03",
+      "period_id": "period-2026-2027",
+      "candidate_number": 3,
+      "leader_name": "Clara Devina Maharani",
+      "vice_leader_name": "",
+      "photo_url": "/assets/images/paslon_3_lead_1793677969739.jpg",
+      "vision": "Menciptakan ekosistem sekolah yang ceria, sehat jasmani dan rohani, serta berdaya saing tinggi.",
+      "mission": [
+        "Menggelar kompetisi e-sports dan liga olahraga antar kelas (Class Meeting) yang terorganisir profesional.",
+        "Menyediakan forum mental health awareness dan konseling sebaya yang nyaman bagi siswa.",
+        "Meningkatkan fasilitas ruang belajar bersama dan pojok literasi yang ramah siswa.",
+        "Menjalin kemitraan alumni untuk program sharing karir dan persiapan masuk perguruan tinggi."
+      ],
+      "work_programs": [
+        "Liga Olahraga & E-Sports Championship Antar Kelas",
+        "Pojok Teman Curhat & Ruang Kreasi Sehat",
+        "Career Talk bersama Ikatan Alumni Berprestasi"
+      ],
+      "motto": "Bersatu untuk Maju, Bersama Menjadi Nomor Satu",
+      "created_at": "2026-10-20T09:30:00Z"
+    },
+    {
+      "id": "cand-arch-01",
+      "period_id": "period-2025-2026",
+      "candidate_number": 1,
+      "leader_name": "Dimas Satria Wibowo",
+      "vice_leader_name": "",
+      "photo_url": "/assets/images/paslon_1_lead_1793677968157.jpg",
+      "vision": "Mewujudkan OSIS yang solid, kreatif, dan berintegritas.",
+      "mission": [
+        "Pengembangan minat bakat",
+        "Peningkatan kedisiplinan"
+      ],
+      "created_at": "2025-10-20T08:00:00Z"
+    },
+    {
+      "id": "cand-arch-02",
+      "period_id": "period-2025-2026",
+      "candidate_number": 2,
+      "leader_name": "Faisal Ramadhan",
+      "vice_leader_name": "",
+      "photo_url": "/assets/images/paslon_2_lead_1793677970153.jpg",
+      "vision": "Mewujudkan sekolah berwawasan lingkungan dan berprestasi.",
+      "mission": [
+        "Gerakan ramah lingkungan",
+        "Bazar seni"
+      ],
+      "created_at": "2025-10-20T08:00:00Z"
+    }
+  ],
+  "students": [
+    {
+      "id": "std-001",
+      "period_id": "period-2026-2027",
+      "nisn": "0061234501",
+      "pin": "842913",
+      "name": "Ahmad Fauzan Nugraha",
+      "class_name": "X-A",
+      "voter_type": "SISWA",
+      "has_voted": true,
+      "voted_at": "2026-11-03T08:14:22Z",
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "std-002",
+      "period_id": "period-2026-2027",
+      "nisn": "0061234502",
+      "pin": "391048",
+      "name": "Bella Safitri Handayani",
+      "class_name": "X-A",
+      "voter_type": "SISWA",
+      "has_voted": true,
+      "voted_at": "2026-11-03T08:22:15Z",
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "std-003",
+      "period_id": "period-2026-2027",
+      "nisn": "0061234503",
+      "pin": "715429",
+      "name": "Citra Kirana Dewi",
+      "class_name": "X-B",
+      "voter_type": "SISWA",
+      "has_voted": true,
+      "voted_at": "2026-11-03T08:35:10Z",
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "std-004",
+      "period_id": "period-2026-2027",
+      "nisn": "0061234504",
+      "pin": "528391",
+      "name": "Danu Pratama Wijaya",
+      "class_name": "X-B",
+      "voter_type": "SISWA",
+      "has_voted": false,
+      "voted_at": null,
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "std-005",
+      "period_id": "period-2026-2027",
+      "nisn": "0061234505",
+      "pin": "194726",
+      "name": "Eka Nurhaliza",
+      "class_name": "XI-MIPA 1",
+      "voter_type": "SISWA",
+      "has_voted": true,
+      "voted_at": "2026-11-03T08:48:00Z",
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "std-006",
+      "period_id": "period-2026-2027",
+      "nisn": "0061234506",
+      "pin": "638201",
+      "name": "Fadhil Rahman Akbar",
+      "class_name": "XI-MIPA 1",
+      "voter_type": "SISWA",
+      "has_voted": true,
+      "voted_at": "2026-11-03T09:02:11Z",
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "std-007",
+      "period_id": "period-2026-2027",
+      "nisn": "0061234507",
+      "pin": "482093",
+      "name": "Gita Permatasari",
+      "class_name": "XI-IPS 2",
+      "voter_type": "SISWA",
+      "has_voted": false,
+      "voted_at": null,
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "std-008",
+      "period_id": "period-2026-2027",
+      "nisn": "0061234508",
+      "pin": "903481",
+      "name": "Hafiz Maulana Syarif",
+      "class_name": "XI-IPS 2",
+      "voter_type": "SISWA",
+      "has_voted": true,
+      "voted_at": "2026-11-03T09:18:40Z",
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "std-009",
+      "period_id": "period-2026-2027",
+      "nisn": "0061234509",
+      "pin": "761928",
+      "name": "Intan Ayu Puspitasari",
+      "class_name": "XII-MIPA 2",
+      "voter_type": "SISWA",
+      "has_voted": false,
+      "voted_at": null,
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "std-010",
+      "period_id": "period-2026-2027",
+      "nisn": "0061234510",
+      "pin": "254890",
+      "name": "Joko Tri Anggoro",
+      "class_name": "XII-MIPA 2",
+      "voter_type": "SISWA",
+      "has_voted": true,
+      "voted_at": "2026-11-03T09:30:15Z",
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "std-011",
+      "period_id": "period-2026-2027",
+      "nisn": "0061234511",
+      "pin": "817294",
+      "name": "Kirana Larasati",
+      "class_name": "XII-IPS 1",
+      "voter_type": "SISWA",
+      "has_voted": false,
+      "voted_at": null,
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "std-012",
+      "period_id": "period-2026-2027",
+      "nisn": "0061234512",
+      "pin": "320951",
+      "name": "Lukman Hakim",
+      "class_name": "XII-IPS 1",
+      "voter_type": "SISWA",
+      "has_voted": true,
+      "voted_at": "2026-11-03T09:42:50Z",
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "guru-001",
+      "period_id": "period-2026-2027",
+      "nisn": "197808152005011003",
+      "pin": "512934",
+      "name": "Drs. H. Ahmad Dahlan, M.Pd.",
+      "class_name": "Guru Fisika & Pembina",
+      "voter_type": "GURU",
+      "has_voted": true,
+      "voted_at": "2026-11-03T07:45:10Z",
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "guru-002",
+      "period_id": "period-2026-2027",
+      "nisn": "198204122008012007",
+      "pin": "381920",
+      "name": "Ibu Dra. Hj. Siti Rahmawati, M.Pd.",
+      "class_name": "Guru Bahasa Indonesia",
+      "voter_type": "GURU",
+      "has_voted": true,
+      "voted_at": "2026-11-03T08:05:30Z",
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "guru-003",
+      "period_id": "period-2026-2027",
+      "nisn": "198906232014021001",
+      "pin": "749102",
+      "name": "Bapak Budi Wicaksono, S.Pd., M.Si.",
+      "class_name": "Guru Matematika",
+      "voter_type": "GURU",
+      "has_voted": false,
+      "voted_at": null,
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "guru-004",
+      "period_id": "period-2026-2027",
+      "nisn": "199311052019032011",
+      "pin": "620194",
+      "name": "Ibu Nurul Hidayati, S.Pd.",
+      "class_name": "Guru Biologi & Pembina OSIS",
+      "voter_type": "GURU",
+      "has_voted": false,
+      "voted_at": null,
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "tu-001",
+      "period_id": "period-2026-2027",
+      "nisn": "198409102009022004",
+      "pin": "915302",
+      "name": "Ibu Endang Sulastri, S.AP.",
+      "class_name": "Kepala Tata Usaha / Kepegawaian",
+      "voter_type": "TATA_USAHA",
+      "has_voted": true,
+      "voted_at": "2026-11-03T07:55:00Z",
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "tu-002",
+      "period_id": "period-2026-2027",
+      "nisn": "199003182015011005",
+      "pin": "439210",
+      "name": "Bapak Agus Prasetyo",
+      "class_name": "Staf TU - Kesiswaan & IT",
+      "voter_type": "TATA_USAHA",
+      "has_voted": false,
+      "voted_at": null,
+      "created_at": "2026-10-25T08:00:00Z"
+    },
+    {
+      "id": "tu-003",
+      "period_id": "period-2026-2027",
+      "nisn": "199507202020012009",
+      "pin": "803195",
+      "name": "Ibu Wahyuni, A.Md.",
+      "class_name": "Staf TU - Bendahara & Administrasi",
+      "voter_type": "TATA_USAHA",
+      "has_voted": false,
+      "voted_at": null,
+      "created_at": "2026-10-25T08:00:00Z"
+    }
+  ],
+  "votes": [
+    {
+      "id": "vote-1",
+      "period_id": "period-2026-2027",
+      "candidate_id": "cand-01",
+      "created_at": "2026-11-03T07:45:10Z"
+    },
+    {
+      "id": "vote-2",
+      "period_id": "period-2026-2027",
+      "candidate_id": "cand-03",
+      "created_at": "2026-11-03T07:55:00Z"
+    },
+    {
+      "id": "vote-3",
+      "period_id": "period-2026-2027",
+      "candidate_id": "cand-02",
+      "created_at": "2026-11-03T08:05:30Z"
+    },
+    {
+      "id": "vote-4",
+      "period_id": "period-2026-2027",
+      "candidate_id": "cand-01",
+      "created_at": "2026-11-03T08:14:22Z"
+    },
+    {
+      "id": "vote-5",
+      "period_id": "period-2026-2027",
+      "candidate_id": "cand-02",
+      "created_at": "2026-11-03T08:22:15Z"
+    },
+    {
+      "id": "vote-6",
+      "period_id": "period-2026-2027",
+      "candidate_id": "cand-01",
+      "created_at": "2026-11-03T08:35:10Z"
+    },
+    {
+      "id": "vote-7",
+      "period_id": "period-2026-2027",
+      "candidate_id": "cand-03",
+      "created_at": "2026-11-03T08:48:00Z"
+    },
+    {
+      "id": "vote-8",
+      "period_id": "period-2026-2027",
+      "candidate_id": "cand-01",
+      "created_at": "2026-11-03T09:02:11Z"
+    },
+    {
+      "id": "vote-9",
+      "period_id": "period-2026-2027",
+      "candidate_id": "cand-02",
+      "created_at": "2026-11-03T09:18:40Z"
+    },
+    {
+      "id": "vote-10",
+      "period_id": "period-2026-2027",
+      "candidate_id": "cand-01",
+      "created_at": "2026-11-03T09:30:15Z"
+    },
+    {
+      "id": "vote-11",
+      "period_id": "period-2026-2027",
+      "candidate_id": "cand-03",
+      "created_at": "2026-11-03T09:42:50Z"
+    }
+  ],
+  "committees": [
+    {
+      "id": "comm-01",
+      "period_id": "period-2026-2027",
+      "name": "Bapak Rahmat Hidayat, S.Pd.",
+      "sk_number": "SK.045/PAN-PEMILU/SMAN1/2026",
+      "role": "Ketua Panitia",
+      "email": "rahmat.hidayat@sekolah.sch.id",
+      "created_at": "2026-10-10T08:00:00Z"
+    },
+    {
+      "id": "comm-02",
+      "period_id": "period-2026-2027",
+      "name": "Ibu Ratna Susilowati, S.Kom.",
+      "sk_number": "SK.045/PAN-PEMILU/SMAN1/2026",
+      "role": "Seksi Teknis / IT",
+      "email": "ratna.it@sekolah.sch.id",
+      "created_at": "2026-10-10T08:00:00Z"
+    },
+    {
+      "id": "comm-03",
+      "period_id": "period-2026-2027",
+      "name": "Bima Satrio (Pengurus MPK)",
+      "sk_number": "SK.045/PAN-PEMILU/SMAN1/2026",
+      "role": "Pengawas TPS",
+      "email": "mpk.bima@sekolah.sch.id",
+      "created_at": "2026-10-10T08:00:00Z"
+    }
+  ],
+  "audit_logs": [
+    {
+      "id": "log-1",
+      "timestamp": "2026-11-03T07:30:00Z",
+      "action": "Bilik Suara Dibuka",
+      "details": "Status sesi pemilihan diubah menjadi OPEN oleh Panitia IT.",
+      "actor": "Ibu Ratna Susilowati, S.Kom. (IT)"
+    },
+    {
+      "id": "log-2",
+      "timestamp": "2026-11-03T07:15:00Z",
+      "action": "Verifikasi DPT",
+      "details": "Pengecekan akhir 12 data pemilih terdaftar periode 2026/2027.",
+      "actor": "Bapak Rahmat Hidayat (Ketua Panitia)"
+    },
+    {
+      "id": "log-3",
+      "timestamp": "2026-11-02T16:00:00Z",
+      "action": "Generate Kredensial PIN",
+      "details": "Batch generate 6-digit random PIN untuk pemilih baru.",
+      "actor": "Sistem Otomatis E-Voting"
+    }
+  ],
+  "users": [
+    {
+      "id": "usr-admin-1",
+      "username": "admin",
+      "password": "admin123",
+      "name": "Drs. H. Mulyadi, M.Pd.",
+      "role": "admin",
+      "sk_number": "NIP. 19740512 199903 1 002",
+      "created_at": "2026-10-01T08:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "usr-panitia-1",
+      "username": "panitia",
+      "password": "panitia123",
+      "name": "Bapak Rahmat Hidayat, S.Pd.",
+      "role": "panitia",
+      "sk_number": "SK.045/PAN-PEMILU/SMAN1/2026",
+      "created_at": "2026-10-10T08:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "usr-panitia-2",
+      "username": "it_panitia",
+      "password": "it123",
+      "name": "Ibu Ratna Susilowati, S.Kom.",
+      "role": "panitia",
+      "sk_number": "SK.045/PAN-PEMILU/SMAN1/2026",
+      "created_at": "2026-10-10T08:00:00Z",
+      "is_active": true
+    }
+  ],
+  "version": 2,
+  "last_updated": "2026-11-04T13:26:30.133Z"
+}
