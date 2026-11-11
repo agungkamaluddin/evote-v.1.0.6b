@@ -131,13 +131,17 @@ function saveBase64Image(dataUrl: string, prefix = 'asset'): string {
   if (!dataUrl.startsWith('data:image/')) return dataUrl;
 
   try {
-    const matches = dataUrl.match(/^data:image\/([a-zA-Z0-9+.-]+);base64,(.+)$/);
+    const matches = dataUrl.match(/^data:image\/([a-zA-Z0-9+.-]+);(?:charset=[^;]+;)?base64,([\s\S]+)$/i);
     if (!matches) return dataUrl;
 
     const rawExt = matches[1].toLowerCase();
     const ext = rawExt === 'jpeg' ? 'jpg' : rawExt === 'svg+xml' ? 'svg' : rawExt;
-    const base64Data = matches[2];
+    const base64Data = matches[2].replace(/\s/g, '');
     const buffer = Buffer.from(base64Data, 'base64');
+
+    if (!fs.existsSync(UPLOADS_DIR)) {
+      try { fs.mkdirSync(UPLOADS_DIR, { recursive: true }); } catch (e) {}
+    }
 
     const cleanName = prefix.replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 30);
     const savedFileName = `${cleanName}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`;

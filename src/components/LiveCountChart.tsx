@@ -327,6 +327,13 @@ export const LiveCountChart: React.FC<LiveCountChartProps> = ({
                           alt={cand.leader_name}
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover object-top"
+                          onError={(e) => {
+                            const target = e.currentTarget as HTMLImageElement;
+                            if (!target.dataset.failed) {
+                              target.dataset.failed = 'true';
+                              target.src = '/assets/images/paslon_1_lead_1793677968157.jpg';
+                            }
+                          }}
                         />
                         <div className="absolute top-2 left-2 bg-slate-900/90 backdrop-blur-xs text-white font-mono text-[10px] sm:text-xs font-extrabold px-2 py-0.5 rounded-lg border border-white/20 shadow-xs">
                           #{cand.candidate_number.toString().padStart(2, '0')}

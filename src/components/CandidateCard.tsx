@@ -31,8 +31,11 @@ export const CandidateCard: React.FC<CandidateCardProps> = ({
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover object-top group-hover:scale-102 transition-transform duration-300"
               onError={(e) => {
-                // Fallback styled placeholder if image fails
-                (e.currentTarget as HTMLElement).style.display = 'none';
+                const target = e.currentTarget as HTMLImageElement;
+                if (!target.dataset.failed) {
+                  target.dataset.failed = 'true';
+                  target.src = '/assets/images/paslon_1_lead_1793677968157.jpg';
+                }
               }}
             />
 

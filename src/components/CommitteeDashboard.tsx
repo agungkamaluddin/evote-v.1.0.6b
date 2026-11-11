@@ -113,6 +113,8 @@ export const CommitteeDashboard: React.FC<CommitteeDashboardProps> = ({
   const [candidatePhotoError, setCandidatePhotoError] = useState<string>('');
   const [isCandidatePhotoDragging, setIsCandidatePhotoDragging] = useState<boolean>(false);
   const [candidatePhotoInputTab, setCandidatePhotoInputTab] = useState<'upload' | 'preset' | 'url'>('upload');
+  const [isUploadingCandidatePhoto, setIsUploadingCandidatePhoto] = useState<boolean>(false);
+  const [isSavingCandidate, setIsSavingCandidate] = useState<boolean>(false);
 
   // Form states
   const [newStudent, setNewStudent] = useState<{
@@ -297,27 +299,43 @@ export const CommitteeDashboard: React.FC<CommitteeDashboardProps> = ({
       setCandidatePhotoError('Mohon pilih file gambar yang valid (JPG, PNG, WebP, SVG).');
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      setCandidatePhotoError('Ukuran file maksimal 5 MB.');
+    if (file.size > 15 * 1024 * 1024) {
+      setCandidatePhotoError('Ukuran file maksimal 15 MB.');
       return;
     }
+
+    setIsUploadingCandidatePhoto(true);
 
     const reader = new FileReader();
     reader.onload = async (event) => {
       const result = event.target?.result as string;
       if (result) {
+        // Immediately set photo preview & form data so it is NEVER missing even if saved immediately
         setCandidatePhotoPreview(result);
+        setCandidateForm((prev) => ({ ...prev, photo_url: result }));
+
         try {
-          const permUrl = await votingStore.uploadAsset(result, `paslon_${candidateForm.candidate_number || 'photo'}`);
-          setCandidateForm((prev) => ({ ...prev, photo_url: permUrl }));
-          setCandidatePhotoPreview(permUrl);
-        } catch {
-          setCandidateForm((prev) => ({ ...prev, photo_url: result }));
+          const permUrl = await votingStore.uploadAsset(
+            result,
+            `paslon_${candidateForm.candidate_number || editingCandidate?.candidate_number || 'photo'}`
+          );
+          if (permUrl) {
+            setCandidateForm((prev) => ({ ...prev, photo_url: permUrl }));
+            setCandidatePhotoPreview(permUrl);
+          }
+        } catch (err: any) {
+          console.warn('Upload to server fallback:', err);
+          // Keep the data URL as fallback so candidate photo is still preserved
+        } finally {
+          setIsUploadingCandidatePhoto(false);
         }
+      } else {
+        setIsUploadingCandidatePhoto(false);
       }
     };
     reader.onerror = () => {
       setCandidatePhotoError('Gagal membaca file gambar foto calon.');
+      setIsUploadingCandidatePhoto(false);
     };
     reader.readAsDataURL(file);
   };
@@ -600,32 +618,65 @@ export const CommitteeDashboard: React.FC<CommitteeDashboardProps> = ({
     setShowCandidateModal(true);
   };
 
-  const handleSaveCandidate = (e: React.FormEvent) => {
+  const handleSaveCandidate = async (e: React.FormEvent) => {
     e.preventDefault();
-    const missionArray = candidateForm.mission
-      .split('\n')
-      .map((m) => m.trim())
-      .filter(Boolean);
-    const workProgramsArray = candidateForm.work_programs
-      .split('\n')
-      .map((p) => p.trim())
-      .filter(Boolean);
+    if (isSavingCandidate) return;
 
-    votingStore.saveCandidate({
-      ...(editingCandidate ? { id: editingCandidate.id } : {}),
-      period_id: activePeriod.id,
-      candidate_number: Number(candidateForm.candidate_number),
-      leader_name: candidateForm.leader_name.trim(),
-      vice_leader_name: '',
-      photo_url: candidateForm.photo_url || '/assets/images/paslon_1_lead_1793677968157.jpg',
-      vision: candidateForm.vision.trim(),
-      mission: missionArray,
-      work_programs: workProgramsArray,
-      motto: candidateForm.motto.trim(),
-    });
+    setIsSavingCandidate(true);
+    setCandidatePhotoError('');
 
-    showToast('success', 'Data calon ketua berhasil disimpan.');
-    setShowCandidateModal(false);
+    try {
+      const missionArray = candidateForm.mission
+        .split('\n')
+        .map((m) => m.trim())
+        .filter(Boolean);
+      const workProgramsArray = candidateForm.work_programs
+        .split('\n')
+        .map((p) => p.trim())
+        .filter(Boolean);
+
+      // Prioritize what is visible in the preview, then form, then editingCandidate, then fallback
+      let effectivePhoto = candidatePhotoPreview || candidateForm.photo_url || editingCandidate?.photo_url;
+      if (!effectivePhoto) {
+        effectivePhoto = '/assets/images/paslon_1_lead_1793677968157.jpg';
+      }
+
+      // If photo is still Base64, upload to server now to guarantee permanent URL (/uploads/...)
+      if (effectivePhoto.startsWith('data:image/')) {
+        try {
+          const permUrl = await votingStore.uploadAsset(
+            effectivePhoto,
+            `paslon_${candidateForm.candidate_number || editingCandidate?.candidate_number || 'lead'}`
+          );
+          if (permUrl) {
+            effectivePhoto = permUrl;
+          }
+        } catch (uploadErr) {
+          console.warn('Could not upload photo in handleSaveCandidate:', uploadErr);
+        }
+      }
+
+      await votingStore.saveCandidateAsync({
+        ...(editingCandidate ? { id: editingCandidate.id } : {}),
+        period_id: activePeriod.id,
+        candidate_number: Number(candidateForm.candidate_number),
+        leader_name: candidateForm.leader_name.trim(),
+        vice_leader_name: '',
+        photo_url: effectivePhoto,
+        vision: candidateForm.vision.trim(),
+        mission: missionArray,
+        work_programs: workProgramsArray,
+        motto: candidateForm.motto.trim(),
+      });
+
+      showToast('success', 'Data & foto calon ketua berhasil disimpan.');
+      setShowCandidateModal(false);
+    } catch (err: any) {
+      console.error('Error saving candidate:', err);
+      showToast('error', 'Gagal menyimpan calon: ' + (err?.message || 'Terjadi kesalahan sistem'));
+    } finally {
+      setIsSavingCandidate(false);
+    }
   };
 
   const handleDeleteCandidate = (candId: string) => {
@@ -1524,6 +1575,13 @@ export const CommitteeDashboard: React.FC<CommitteeDashboardProps> = ({
                       alt={cand.leader_name}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover object-top"
+                      onError={(e) => {
+                        const target = e.currentTarget as HTMLImageElement;
+                        if (!target.dataset.failed) {
+                          target.dataset.failed = 'true';
+                          target.src = '/assets/images/paslon_1_lead_1793677968157.jpg';
+                        }
+                      }}
                     />
                     <div className="absolute top-3 left-3 px-3 py-1 rounded-xl bg-slate-900/90 text-white font-mono font-extrabold text-sm border border-white/20">
                       #{cand.candidate_number.toString().padStart(2, '0')}
@@ -1705,6 +1763,13 @@ export const CommitteeDashboard: React.FC<CommitteeDashboardProps> = ({
                       src={cand.photo_url}
                       alt={cand.leader_name}
                       className="w-12 h-12 rounded-xl object-cover object-top border border-slate-200 shadow-2xs shrink-0"
+                      onError={(e) => {
+                        const target = e.currentTarget as HTMLImageElement;
+                        if (!target.dataset.failed) {
+                          target.dataset.failed = 'true';
+                          target.src = '/assets/images/paslon_1_lead_1793677968157.jpg';
+                        }
+                      }}
                     />
                     <div className="min-w-0">
                       <span className="px-2 py-0.5 rounded-md bg-slate-900 text-white text-[10px] font-mono font-bold mr-1.5">
@@ -2564,30 +2629,40 @@ export const CommitteeDashboard: React.FC<CommitteeDashboardProps> = ({
                         : 'border-slate-300 bg-white hover:border-slate-400'
                     }`}
                   >
-                    <input
-                      type="file"
-                      id="candidate-photo-file-input"
-                      accept="image/png, image/jpeg, image/jpg, image/webp"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) processCandidatePhotoFile(file);
-                      }}
-                    />
-                    <label
-                      htmlFor="candidate-photo-file-input"
-                      className="cursor-pointer flex flex-col items-center justify-center gap-1.5"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center">
-                        <UploadCloud className="w-5 h-5" />
+                    {isUploadingCandidatePhoto ? (
+                      <div className="py-4 flex flex-col items-center justify-center gap-2">
+                        <div className="w-8 h-8 border-3 border-emerald-500/30 border-t-emerald-600 rounded-full animate-spin" />
+                        <span className="text-xs font-bold text-emerald-800">Mengunggah & memproses foto calon...</span>
+                        <p className="text-[10px] text-slate-500">Foto sedang dikompres dan disimpan secara permanen.</p>
                       </div>
-                      <div className="text-xs font-bold text-slate-800">
-                        Klik untuk Pilih Foto atau Seret File ke Sini
-                      </div>
-                      <p className="text-[10px] text-slate-400">
-                        Mendukung format JPG, PNG, atau WebP (Maksimal 5 MB)
-                      </p>
-                    </label>
+                    ) : (
+                      <>
+                        <input
+                          type="file"
+                          id="candidate-photo-file-input"
+                          accept="image/png, image/jpeg, image/jpg, image/webp"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) processCandidatePhotoFile(file);
+                          }}
+                        />
+                        <label
+                          htmlFor="candidate-photo-file-input"
+                          className="cursor-pointer flex flex-col items-center justify-center gap-1.5"
+                        >
+                          <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center">
+                            <UploadCloud className="w-5 h-5" />
+                          </div>
+                          <div className="text-xs font-bold text-slate-800">
+                            Klik untuk Pilih Foto atau Seret File ke Sini
+                          </div>
+                          <p className="text-[10px] text-slate-400">
+                            Mendukung format JPG, PNG, atau WebP (Otomatis dikompres)
+                          </p>
+                        </label>
+                      </>
+                    )}
                   </div>
                 )}
 
@@ -2666,15 +2741,25 @@ export const CommitteeDashboard: React.FC<CommitteeDashboardProps> = ({
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 inline-block">
-                        Foto Calon Siap Digunakan
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded border inline-block ${
+                        candidatePhotoPreview.startsWith('/uploads/')
+                          ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
+                          : candidatePhotoPreview.startsWith('data:image')
+                          ? 'text-indigo-700 bg-indigo-50 border-indigo-200'
+                          : 'text-slate-700 bg-slate-100 border-slate-200'
+                      }`}>
+                        {candidatePhotoPreview.startsWith('/uploads/')
+                          ? '✓ Foto Tersimpan Permanen di Server'
+                          : candidatePhotoPreview.startsWith('data:image')
+                          ? '✓ Foto Dipilih (Disimpan Otomatis)'
+                          : 'Foto Calon Siap Digunakan'}
                       </span>
                       <div className="text-xs font-bold text-slate-800 truncate mt-0.5">
                         {candidateForm.leader_name || 'Nama Calon Ketua'}
                       </div>
                       <p className="text-[10px] text-slate-400 truncate">
                         {candidatePhotoPreview.startsWith('data:image')
-                          ? 'Foto lokal tersimpan (Base64)'
+                          ? 'Foto siap disinkronkan ke server'
                           : candidatePhotoPreview}
                       </p>
                     </div>
@@ -2739,9 +2824,22 @@ export const CommitteeDashboard: React.FC<CommitteeDashboardProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-lg bg-slate-900 text-white font-bold"
+                  disabled={isSavingCandidate}
+                  className="px-5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 disabled:bg-slate-500 text-white font-bold flex items-center gap-2 transition-all cursor-pointer shadow-xs"
                 >
-                  Simpan Paslon
+                  {isSavingCandidate ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Menyimpan Data & Foto...</span>
+                    </>
+                  ) : isUploadingCandidatePhoto ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Mengunggah Foto...</span>
+                    </>
+                  ) : (
+                    <span>Simpan Paslon</span>
+                  )}
                 </button>
               </div>
             </form>

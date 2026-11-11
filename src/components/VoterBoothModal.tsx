@@ -398,6 +398,13 @@ export const VoterBoothModal: React.FC<VoterBoothModalProps> = ({
                             alt={cand.leader_name}
                             referrerPolicy="no-referrer"
                             className="w-full h-full object-cover object-top"
+                            onError={(e) => {
+                              const target = e.currentTarget as HTMLImageElement;
+                              if (!target.dataset.failed) {
+                                target.dataset.failed = 'true';
+                                target.src = '/assets/images/paslon_1_lead_1793677968157.jpg';
+                              }
+                            }}
                           />
                           <div className="absolute top-3 left-3 px-3 py-1 rounded-xl bg-slate-900/90 text-white font-mono font-extrabold text-sm border border-white/20 shadow-sm">
                             #{cand.candidate_number.toString().padStart(2, '0')}
@@ -531,6 +538,13 @@ export const VoterBoothModal: React.FC<VoterBoothModalProps> = ({
                   alt={selectedCandidate.leader_name}
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover object-top"
+                  onError={(e) => {
+                    const target = e.currentTarget as HTMLImageElement;
+                    if (!target.dataset.failed) {
+                      target.dataset.failed = 'true';
+                      target.src = '/assets/images/paslon_1_lead_1793677968157.jpg';
+                    }
+                  }}
                 />
               </div>
               <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-900 text-white inline-block">
@@ -578,6 +592,13 @@ export const VoterBoothModal: React.FC<VoterBoothModalProps> = ({
                     alt={showVisiMisiModal.leader_name}
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover object-top"
+                    onError={(e) => {
+                      const target = e.currentTarget as HTMLImageElement;
+                      if (!target.dataset.failed) {
+                        target.dataset.failed = 'true';
+                        target.src = '/assets/images/paslon_1_lead_1793677968157.jpg';
+                      }
+                    }}
                   />
                 </div>
                 <div>

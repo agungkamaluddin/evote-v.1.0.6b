@@ -44,6 +44,12 @@ export function normalizeAssetUrl(url?: string): string {
   if (url.startsWith('/src/assets/images/')) {
     return url.replace('/src/assets/images/', '/assets/images/');
   }
+  if (url.startsWith('src/assets/images/')) {
+    return '/' + url.replace('src/assets/images/', 'assets/images/');
+  }
+  if (url.startsWith('assets/images/') || url.startsWith('uploads/')) {
+    return '/' + url;
+  }
   return url;
 }
 
@@ -114,6 +120,7 @@ type Listener = () => void;
 
 class VotingStore {
   private listeners: Set<Listener> = new Set();
+  private memoryStore: Record<string, any> = {};
   private lastVersion = 0;
   private isSyncing = false;
   private isSeedingSupabase = false;
@@ -467,11 +474,16 @@ class VotingStore {
         const data = localStorage.getItem(key);
         if (data) {
           const parsed = JSON.parse(data);
-          return this.sanitizeLoadedData(key, parsed);
+          const sanitized = this.sanitizeLoadedData<T>(key, parsed);
+          this.memoryStore[key] = sanitized;
+          return sanitized;
         }
       }
     } catch (e) {
       console.warn(`Error loading key ${key} from storage:`, e);
+    }
+    if (this.memoryStore[key] !== undefined) {
+      return this.memoryStore[key] as T;
     }
     return defaultValue;
   }
@@ -497,34 +509,57 @@ class VotingStore {
   }
 
   private save<T>(key: string, value: T, shouldBroadcastToServer = true): void {
+    this.memoryStore[key] = value;
     try {
       if (typeof window !== 'undefined' && window.localStorage) {
-        localStorage.setItem(key, JSON.stringify(value));
-      }
-      this.notify();
-
-      if (shouldBroadcastToServer && !isSupabaseConfigured()) {
-        this.broadcastToServer({ [key]: value });
+        try {
+          localStorage.setItem(key, JSON.stringify(value));
+        } catch (storageError) {
+          console.warn(`LocalStorage quota exceeded for ${key}, retaining in memory and server:`, storageError);
+          try {
+            // Prune non-critical audit logs to reclaim storage space
+            localStorage.removeItem(STORAGE_KEYS.AUDIT_LOGS);
+            localStorage.setItem(key, JSON.stringify(value));
+          } catch {}
+        }
       }
     } catch (e) {
       console.error(`Error saving key ${key} to storage:`, e);
     }
+
+    this.notify();
+
+    if (shouldBroadcastToServer && !isSupabaseConfigured()) {
+      this.broadcastToServer({ [key]: value });
+    }
   }
 
   private saveMultiple(entries: Record<string, any>, shouldBroadcastToServer = true): void {
+    Object.entries(entries).forEach(([key, val]) => {
+      this.memoryStore[key] = val;
+    });
     try {
       if (typeof window !== 'undefined' && window.localStorage) {
         Object.entries(entries).forEach(([key, val]) => {
-          localStorage.setItem(key, JSON.stringify(val));
+          try {
+            localStorage.setItem(key, JSON.stringify(val));
+          } catch (storageError) {
+            console.warn(`LocalStorage quota exceeded for ${key}:`, storageError);
+            try {
+              localStorage.removeItem(STORAGE_KEYS.AUDIT_LOGS);
+              localStorage.setItem(key, JSON.stringify(val));
+            } catch {}
+          }
         });
-      }
-      this.notify();
-
-      if (shouldBroadcastToServer && !isSupabaseConfigured()) {
-        this.broadcastToServer(entries);
       }
     } catch (e) {
       console.error('Error saving multiple keys to storage:', e);
+    }
+
+    this.notify();
+
+    if (shouldBroadcastToServer && !isSupabaseConfigured()) {
+      this.broadcastToServer(entries);
     }
   }
 
@@ -654,9 +689,11 @@ class VotingStore {
       return normalizeAssetUrl(dataUrl);
     }
 
+    // Always compress image on client-side first so network payload and storage are small (< 250KB)
+    const compressed = await compressImageDataUrl(dataUrl, 800, 0.85);
+
     const supabase = getSupabaseClient();
     if (supabase) {
-      const compressed = await compressImageDataUrl(dataUrl, 720, 0.84);
       const parsed = dataUrlToBlob(compressed);
       if (parsed) {
         try {
@@ -683,7 +720,7 @@ class VotingStore {
       const res = await fetch('/api/upload-asset', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dataUrl, filename }),
+        body: JSON.stringify({ dataUrl: compressed, filename }),
       });
       if (res.ok) {
         const body = await res.json();
@@ -694,7 +731,7 @@ class VotingStore {
     } catch {
       // Fallback
     }
-    return await compressImageDataUrl(dataUrl, 720, 0.84);
+    return compressed;
   }
 
   // --- SCHOOL CONFIG ---
@@ -906,6 +943,21 @@ class VotingStore {
     }
 
     return savedCand;
+  }
+
+  public async saveCandidateAsync(candidate: Omit<Candidate, 'id' | 'created_at'> & { id?: string }): Promise<Candidate> {
+    let targetPhoto = candidate.photo_url;
+    if (targetPhoto && targetPhoto.startsWith('data:image/')) {
+      try {
+        const uploadedUrl = await this.uploadAsset(targetPhoto, `paslon_${candidate.candidate_number || 'lead'}`);
+        if (uploadedUrl) {
+          targetPhoto = uploadedUrl;
+        }
+      } catch (err) {
+        console.warn('Could not pre-upload candidate photo:', err);
+      }
+    }
+    return this.saveCandidate({ ...candidate, photo_url: targetPhoto });
   }
 
   public deleteCandidate(candidateId: string): void {
