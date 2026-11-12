@@ -868,6 +868,50 @@ class VotingStore {
     }
   }
 
+  // --- EMBARGO LIVE COUNT (BLIND MODE) ---
+  public isEmbargoActive(periodId?: string): boolean {
+    const active = this.getActivePeriod();
+    const targetPeriod = periodId ? this.getPeriods().find((p) => p.id === periodId) : active;
+    return !!targetPeriod?.is_embargo_active;
+  }
+
+  public setEmbargoStatus(periodIdOrIsEmbargo: string | boolean, maybeIsEmbargo?: boolean): void {
+    const isEmbargo = typeof periodIdOrIsEmbargo === 'boolean' ? periodIdOrIsEmbargo : Boolean(maybeIsEmbargo);
+    const targetPeriodId = typeof periodIdOrIsEmbargo === 'string' ? periodIdOrIsEmbargo : this.getActivePeriod().id;
+
+    const periods = this.getPeriods().map((p) =>
+      p.id === targetPeriodId ? { ...p, is_embargo_active: isEmbargo } : p
+    );
+    this.save(STORAGE_KEYS.PERIODS, periods);
+    this.addAuditLog(
+      'Mode Embargo Diubah',
+      `Mode embargo hasil suara sementara diubah menjadi: ${isEmbargo ? 'AKTIF (Blind Mode / Terkunci)' : 'NONAKTIF (Hasil Terbuka)'}`,
+      'Panitia Pemilihan'
+    );
+
+    // Explicitly sync to central Express server
+    if (!isSupabaseConfigured()) {
+      fetch('/api/voting-data/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ periods }),
+      }).catch((err) => {
+        console.warn('Failed to sync embargo status to server:', err);
+      });
+    }
+
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      supabase
+        .from('periods')
+        .update({ is_embargo_active: isEmbargo })
+        .eq('id', targetPeriodId)
+        .then(({ error }) => {
+          if (error) console.warn('Supabase setEmbargoStatus error:', error.message);
+        });
+    }
+  }
+
   // --- CANDIDATES ---
   public getCandidates(periodId?: string): Candidate[] {
     const active = this.getActivePeriod();

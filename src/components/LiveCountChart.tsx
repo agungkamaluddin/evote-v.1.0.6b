@@ -12,6 +12,10 @@ import {
   GraduationCap,
   Briefcase,
   BookOpen,
+  Tv,
+  EyeOff,
+  Eye,
+  ShieldAlert,
 } from 'lucide-react';
 import type { ElectionPeriod, SchoolConfig } from '../types/index.ts';
 import { votingStore } from '../services/storage.ts';
@@ -21,6 +25,7 @@ interface LiveCountChartProps {
   schoolConfig: SchoolConfig;
   onOpenBooth: () => void;
   onOpenHowToVote?: () => void;
+  onOpenProjector?: () => void;
 }
 
 export const LiveCountChart: React.FC<LiveCountChartProps> = ({
@@ -28,6 +33,7 @@ export const LiveCountChart: React.FC<LiveCountChartProps> = ({
   schoolConfig,
   onOpenBooth,
   onOpenHowToVote,
+  onOpenProjector,
 }) => {
   const stats = votingStore.getElectionStats(activePeriod.id);
   const auditLogs = votingStore.getAuditLogs().slice(0, 5);
@@ -99,6 +105,17 @@ export const LiveCountChart: React.FC<LiveCountChartProps> = ({
                 <span>Gunakan Hak Suara (Bilik Digital)</span>
               </button>
 
+              {onOpenProjector && (
+                <button
+                  type="button"
+                  onClick={onOpenProjector}
+                  className="px-4 py-2.5 text-sm font-bold text-amber-950 bg-amber-400 hover:bg-amber-300 border border-amber-500 rounded-xl transition-all shadow-md active:scale-95 flex items-center gap-2 cursor-pointer"
+                >
+                  <Tv className="w-4 h-4 text-amber-950" />
+                  <span>Mode Proyektor</span>
+                </button>
+              )}
+
               {onOpenHowToVote && (
                 <button
                   type="button"
@@ -115,6 +132,17 @@ export const LiveCountChart: React.FC<LiveCountChartProps> = ({
                 <span>Pukul 07.30 - 15.00 WIB</span>
               </div>
             </div>
+
+            {/* Embargo Alert Banner on Public View */}
+            {activePeriod.is_embargo_active && (
+              <div className="mt-3 p-3 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-200 text-xs flex items-center gap-2.5">
+                <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
+                <div className="flex-1">
+                  <span className="font-bold text-amber-300">Mode Embargo Live Count Aktif: </span>
+                  <span>Persentase perolehan suara disembunyikan sementara di layar publik demi menjaga asas netralitas & ketenangan bilik suara.</span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Quick Realtime Turnout Gauge */}
@@ -278,41 +306,73 @@ export const LiveCountChart: React.FC<LiveCountChartProps> = ({
                 const color = candidateColors[idx % candidateColors.length];
                 const isLeader = leadingCandidate?.id === cand.id && stats.totalVotes > 0 && !isDraw;
                 const barHeight = stats.totalVotes > 0 ? cand.vote_percentage : 0;
+                const isEmbargo = Boolean(activePeriod.is_embargo_active);
 
                 return (
                   <div key={cand.id} className="flex flex-col items-center">
                     
                     {/* Top Floating Metric & Unggul Badge - uniform height h-16 and aligned percentage */}
                     <div className="mb-2 text-center h-16 w-full flex flex-col justify-end items-center transition-transform hover:scale-105">
-                      {isLeader ? (
-                        <span className="mb-1 text-[10px] font-extrabold text-amber-800 bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-xs">
-                          <Sparkles className="w-3 h-3 text-amber-600" />
-                          Unggul
-                        </span>
+                      {isEmbargo ? (
+                        <div className="flex flex-col items-center justify-end">
+                          <span className="mb-1 text-[10px] font-extrabold text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
+                            <EyeOff className="w-3 h-3 text-amber-600" />
+                            Embargo
+                          </span>
+                          <span className="text-sm sm:text-base font-extrabold text-slate-400 font-mono tracking-wider">
+                            ••• %
+                          </span>
+                          <span className="text-[11px] text-slate-400 font-mono font-medium mt-1">
+                            Dirahasiakan
+                          </span>
+                        </div>
                       ) : (
-                        <span className="mb-1 text-[10px] opacity-0 select-none px-2.5 py-0.5 pointer-events-none">
-                          -
-                        </span>
+                        <>
+                          {isLeader ? (
+                            <span className="mb-1 text-[10px] font-extrabold text-amber-800 bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-xs">
+                              <Sparkles className="w-3 h-3 text-amber-600" />
+                              Unggul
+                            </span>
+                          ) : (
+                            <span className="mb-1 text-[10px] opacity-0 select-none px-2.5 py-0.5 pointer-events-none">
+                              -
+                            </span>
+                          )}
+                          <span className="text-sm sm:text-base font-extrabold text-slate-900 font-mono tabular-nums leading-none">
+                            {cand.vote_percentage}%
+                          </span>
+                          <span className="text-[11px] text-slate-500 font-mono font-medium mt-1">
+                            {cand.vote_count} suara
+                          </span>
+                        </>
                       )}
-                      <span className="text-sm sm:text-base font-extrabold text-slate-900 font-mono tabular-nums leading-none">
-                        {cand.vote_percentage}%
-                      </span>
-                      <span className="text-[11px] text-slate-500 font-mono font-medium mt-1">
-                        {cand.vote_count} suara
-                      </span>
                     </div>
 
                     {/* Vertical Bar Track & Pillar */}
                     <div className="w-full max-w-[90px] sm:max-w-[120px] h-56 sm:h-64 bg-slate-200/60 rounded-t-2xl p-1 relative flex items-end justify-center shadow-inner overflow-hidden">
-                      <div
-                        className={`w-full rounded-t-xl transition-all duration-1000 ease-out shadow-md ${color.bar}`}
-                        style={{
-                          height: `${Math.max(barHeight > 0 ? 5 : 2, barHeight)}%`,
-                        }}
-                      >
-                        {/* Shimmer / Gloss on Pillar */}
-                        <div className="w-full h-full bg-linear-to-t from-black/10 via-transparent to-white/25 rounded-t-xl" />
-                      </div>
+                      {isEmbargo ? (
+                        <div className="w-full h-full bg-slate-200/90 rounded-t-xl flex flex-col items-center justify-center p-2 text-center border-t-2 border-dashed border-slate-300">
+                          <div className="w-8 h-8 rounded-full bg-amber-100 border border-amber-300 text-amber-700 flex items-center justify-center mb-1">
+                            <EyeOff className="w-4 h-4" />
+                          </div>
+                          <span className="text-[10px] font-extrabold uppercase text-slate-500 tracking-wider">
+                            Terkunci
+                          </span>
+                          <span className="text-[9px] text-slate-400 leading-tight">
+                            Bilik Suara
+                          </span>
+                        </div>
+                      ) : (
+                        <div
+                          className={`w-full rounded-t-xl transition-all duration-1000 ease-out shadow-md ${color.bar}`}
+                          style={{
+                            height: `${Math.max(barHeight > 0 ? 5 : 2, barHeight)}%`,
+                          }}
+                        >
+                          {/* Shimmer / Gloss on Pillar */}
+                          <div className="w-full h-full bg-linear-to-t from-black/10 via-transparent to-white/25 rounded-t-xl" />
+                        </div>
+                      )}
                     </div>
 
                     {/* X-Axis Baseline separator - identical height & margin */}

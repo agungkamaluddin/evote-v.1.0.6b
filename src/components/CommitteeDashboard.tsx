@@ -39,6 +39,8 @@ import {
   FileCheck,
   RotateCcw,
   Database,
+  EyeOff,
+  Tv,
 } from 'lucide-react';
 import type { Candidate, ElectionPeriod, SchoolConfig, Student, VotingSessionStatus, VoterCategory } from '../types/index.ts';
 import { votingStore } from '../services/storage.ts';
@@ -1642,7 +1644,7 @@ export const CommitteeDashboard: React.FC<CommitteeDashboardProps> = ({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 block mb-1">
-                  Kontrol Sesi Bilik Suara Digital
+                  Kontrol Sesi Bilik Suara Digital & Layar TPS
                 </span>
                 <h3 className="text-xl font-bold text-white">
                   Status Saat Ini:{' '}
@@ -1655,7 +1657,25 @@ export const CommitteeDashboard: React.FC<CommitteeDashboardProps> = ({
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Toggle Mode Embargo Live Count */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = !Boolean(activePeriod.is_embargo_active);
+                    votingStore.setEmbargoStatus(next);
+                  }}
+                  className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border ${
+                    activePeriod.is_embargo_active
+                      ? 'bg-amber-400 text-amber-950 border-amber-300 shadow-md shadow-amber-500/20'
+                      : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border-slate-700'
+                  }`}
+                  title="Mode Embargo: Sembunyikan persentase sementara di layar publik/proyektor"
+                >
+                  <EyeOff className={`w-4 h-4 ${activePeriod.is_embargo_active ? 'text-amber-950' : 'text-amber-400'}`} />
+                  <span>{activePeriod.is_embargo_active ? 'Embargo AKTIF' : 'Mode Embargo'}</span>
+                </button>
+
                 <button
                   onClick={() => handleSessionChange('OPEN')}
                   className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${

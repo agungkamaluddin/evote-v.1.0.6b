@@ -22,6 +22,8 @@ import {
   BookOpen,
   ClipboardCheck,
   UserCheck,
+  Tv,
+  EyeOff,
 } from 'lucide-react';
 import type { AuthStaffUser, ElectionPeriod, SchoolConfig } from '../types/index.ts';
 import { CommitteeTab } from './CommitteeDashboard';
@@ -41,6 +43,7 @@ interface NavbarProps {
   schoolConfig: SchoolConfig;
   onOpenBooth: () => void;
   onOpenGuideModal?: () => void;
+  onOpenProjector?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -57,6 +60,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   schoolConfig,
   onOpenBooth,
   onOpenGuideModal,
+  onOpenProjector,
 }) => {
   const getSessionBadge = () => {
     switch (activePeriod.voting_session_status) {
@@ -334,6 +338,25 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="hidden 2xl:block">
               {getSessionBadge()}
             </div>
+
+            {/* Tombol Mode Proyektor */}
+            {onOpenProjector && (
+              <button
+                type="button"
+                onClick={onOpenProjector}
+                className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 text-xs font-bold text-amber-950 bg-amber-400 hover:bg-amber-300 active:bg-amber-500 rounded-xl transition-all shadow-xs cursor-pointer hover:scale-102 border border-amber-500/50"
+                title="Buka Mode Proyektor (Layar Lebar & Mode Embargo)"
+              >
+                <Tv className="w-3.5 h-3.5 text-amber-950" />
+                <span className="font-extrabold">Mode Proyektor</span>
+                {activePeriod.is_embargo_active && (
+                  <span className="px-1.5 py-0.2 rounded bg-amber-900 text-amber-100 text-[10px] font-mono font-bold flex items-center gap-0.5 ml-0.5">
+                    <EyeOff className="w-2.5 h-2.5" />
+                    <span>Embargo</span>
+                  </span>
+                )}
+              </button>
+            )}
 
             {/* If NOT logged in: Show "Login Petugas" and "Bilik Suara Siswa" */}
             {!currentUser ? (

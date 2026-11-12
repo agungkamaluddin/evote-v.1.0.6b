@@ -9,6 +9,7 @@ export interface ElectionPeriod {
   organization_type: OrgType;
   school_name: string;
   voting_session_status: VotingSessionStatus;
+  is_embargo_active?: boolean; // Mode Embargo Live Count (Blind Mode / Sembunyikan Hasil Sementara)
   start_date: string;
   end_date: string;
   created_at: string;

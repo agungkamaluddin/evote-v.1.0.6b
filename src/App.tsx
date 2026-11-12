@@ -9,8 +9,9 @@ import { AdminSchoolSettings, AdminTab } from './components/AdminSchoolSettings'
 import { LoginModal } from './components/LoginModal';
 import { SupabaseGuideModal } from './components/SupabaseGuideModal';
 import { HowToVoteModal } from './components/HowToVoteModal';
+import { ProjectorViewModal } from './components/ProjectorViewModal';
 import type { AuthStaffUser } from './types/index.ts';
-import { Vote, Sparkles, LogIn, BookOpen } from 'lucide-react';
+import { Vote, Sparkles, LogIn, BookOpen, Tv } from 'lucide-react';
 
 export default function App() {
   // Authentication & Roles
@@ -27,6 +28,9 @@ export default function App() {
   // Student Bilik Suara state
   const [isBoothOpen, setIsBoothOpen] = useState(false);
   const [preselectedCandidateId, setPreselectedCandidateId] = useState<string | null>(null);
+
+  // Big Screen 16:9 Projector View state
+  const [isProjectorOpen, setIsProjectorOpen] = useState(false);
 
   // Reactive state ticker for storage events
   const [, setTick] = useState(0);
@@ -113,6 +117,7 @@ export default function App() {
         schoolConfig={schoolConfig}
         onOpenBooth={() => handleOpenBooth()}
         onOpenGuideModal={currentUser?.role === 'admin' ? () => setIsGuideModalOpen(true) : undefined}
+        onOpenProjector={() => setIsProjectorOpen(true)}
       />
 
       {/* 2. Main Body Content */}
@@ -128,6 +133,7 @@ export default function App() {
               schoolConfig={schoolConfig}
               onOpenBooth={() => handleOpenBooth()}
               onOpenHowToVote={() => setIsHowToVoteOpen(true)}
+              onOpenProjector={() => setIsProjectorOpen(true)}
             />
 
             {/* Candidates Section */}
@@ -328,6 +334,14 @@ export default function App() {
           onClose={() => setIsGuideModalOpen(false)}
         />
       )}
+
+      {/* 8. Big Screen 16:9 Projector View Modal (TPS & Auditorium) with Live Embargo Controls */}
+      <ProjectorViewModal
+        isOpen={isProjectorOpen}
+        onClose={() => setIsProjectorOpen(false)}
+        activePeriod={activePeriod}
+        schoolConfig={schoolConfig}
+      />
 
     </div>
   );
